@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>.audio</title>
+	<script type="text/javascript" src="../../../dances.amd/dances.amd.js"></script>
+	<script type="text/javascript" src="../../../dances.path.js"></script>
+</head>
+<body>
+	<audio controls >
+		您的浏览器不支持 audio 标签
+		<source src="sources/A_Struggle.mp3">
+		<source src="sources/A_Struggle.ogg">
+	</audio>
+
+	<div class="d-play01">
+		<a href="#" class="d-play01-play">播放</a>
+		<a href="#" class="d-play01-pause">暂停</a>
+		<a href="#" class="d-play01-stop">停止</a>
+		<a href="#" class="d-play01-muted">静音</a>
+		<br>
+		<input type="text" class="d-inVolume" value="">
+		<a href="#" class="d-2Volume">设置音量</a>
+	</div>
+
+	<script type="text/javascript">
+		require.conf("baseUrl", "../../../");
+		define.amd.jQuery = true;
+		define.amd.dancesJs = true;
+		define.amd.dancesDom = true;
+		define.amd.dancesAudio = true;
+
+		require(["require", "jQ17", "dJs", "dDom", "dancesAudio"], function(require){
+			var
+				_
+				;
+
+			_ = require("dancesAudio");
+
+			_.init(function(){
+
+				var inst = _({
+						src  : "sources/_xMax.png",
+//					src: "sources/kiss_u_goodbye",
+//						src  : "http://www.fmdisk.com/file/2012/11/29/5294ed424836c95a4a4547ee3a81963c",
+
+					bLoop: true,
+
+					bAuto: false,
+
+					ready: function(){
+//							alert(5)
+					}
+
+				});
+
+				// evt
+				$(document)
+					.on("click", ".d-play01-play", function(){
+						inst.play();
+						return false;
+					})
+
+					.on("click", ".d-play01-pause", function(){
+						inst.pause();
+						return false;
+					})
+
+					.on("click", ".d-play01-stop", function(){
+						inst.stop();
+						return false;
+					})
+
+					.on("click", ".d-play01-muted", function(){
+						var $this = $(this);
+						if(inst.toggleMute()){
+							$this.text("恢复");
+						}else{
+							$this.text("静音");
+						}
+						return false;
+					})
+
+					.on("click", ".d-2Volume", function(){
+						var v = $(".d-inVolume").val();
+
+						v = dances.trim(v);
+
+						inst.volume(v);
+
+						return false;
+					})
+				;
+			});
+
+		});
+
+	</script>
+</body>
+</html>
