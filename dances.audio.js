@@ -61,6 +61,10 @@ src, opts.src 必填其一
 src, opts.src 必填其一
 文件地址.
 
+### opts.bAuto
+自动播放
+默认: false
+
 ### opts.bAutoInit
 自动初始化
 默认: true
@@ -285,7 +289,7 @@ _______*/
 					instEl.addEventListener("canplay", function(){
 						if(!_this.bLoaded){
 							_this.bLoaded = true;
-							"function" === typeof conf.ready && conf.ready(_this);
+							"function" === typeof conf.ready && conf.ready.call(_this, _this);
 						}
 					});
 
@@ -319,7 +323,7 @@ _______*/
 						setTimeout(function(){
 							if(instEl.BufferingProgress > 20){
 								_this.bLoaded = true;
-								"function" === typeof conf.ready && conf.ready(_this);
+								"function" === typeof conf.ready && conf.ready.call(_this, _this);
 							}else{
 								_this._checkLoad();
 							}
@@ -390,6 +394,7 @@ _______*/
 			},
 
 			volume: function(n){
+				var _this = this;
 				// 0~1
 
 				if(!isNaN(n -= 0)){
@@ -401,7 +406,16 @@ _______*/
 						n = 1;
 					}
 
-					this.instEl.volume = b5 ? n : (n - 1) * 2000;
+					if(b5){
+						this.instEl.volume = n;
+
+					}else{
+						n = (n - 1) * 2000;
+						this.instEl.volume = n;
+						setTimeout(function(){
+							_this.instEl.volume = n;
+						}, 0);
+					}
 				}
 
 				return this;
@@ -411,10 +425,10 @@ _______*/
 				this.stop();
 				this.instEl.parentNode.removeChild(this.instEl);
 
-				b5 || clearTimeout(this.wTime);
-
 				for(var prop in this){
-					this.hasOwnProperty(prop) && (this[prop] = null);
+					if(this.hasOwnProperty(prop)){
+						this[prop] = null;
+					}
 				}
 			}
 		};
@@ -496,7 +510,7 @@ _______*/
 		;
 
 		// checkAuto Init klass
-		!bInit || false !== AuConf.bAutoInit && initModule();
+		(!bInit || false !== AuConf.bAutoInit) && initModule();
 
 		if(!bInit){
 			$$log("Instantiated after init Audio", "warn");
